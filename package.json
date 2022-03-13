@@ -1,0 +1,28 @@
+{
+  "name": "zksync-nfts",
+  "version": "1.0.0",
+  "description": "A decentralized NFT Market on zkSync",
+  "main": "index.js",
+  "scripts": {
+    "withdraw": "node withdraw.ts"
+  },
+  "author": "32byte <xlebedenko@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@matterlabs/hardhat-zksync-deploy": "^0.1.5",
+    "@matterlabs/hardhat-zksync-solc": "^0.3.0",
+    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "ethers": "^5.0.0",
+    "hardhat": "^2.9.1",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2",
+    "zksync-web3": "^0.3.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.5.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^9.1.0",
+    "@types/node": "^17.0.21"
+  }
+}
