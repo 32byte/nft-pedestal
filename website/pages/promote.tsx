@@ -38,7 +38,8 @@ export default function Page(props: ProviderProps) {
     (async () => {
       // update balance
       if(!balance) {
-        const balanceInUnits = await provider.getSigner().getBalance(tokens.USDC.address);
+        const address = (await provider.send('eth_requestAccounts', []))[0];
+        const balanceInUnits = await usdcContract.balanceOf(address);
         setBalance(utils.formatUnits(balanceInUnits, tokens.USDC.decimals));
       }
 
@@ -58,7 +59,11 @@ export default function Page(props: ProviderProps) {
   })
 
   const approve = async () => {
-    const txHandle = await usdcContract.approve(contracts.bidder.address, bid);
+    const txHandle = await usdcContract.approve(contracts.bidder.address, bid, {
+      customData: {
+        feeToken: tokens.USDC.address
+      }
+    });
 
     setStatus({
       loading: true,
@@ -99,7 +104,11 @@ export default function Page(props: ProviderProps) {
       return;
     }
 
-    const txHandle = await contract.bid(bid, tokenId);
+    const txHandle = await contract.bid(bid, tokenId, {
+      customData: {
+        feeToken: tokens.USDC.address
+      }
+    });
 
     setStatus({
       loading: true,

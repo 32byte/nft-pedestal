@@ -3,6 +3,7 @@ import { utils } from "ethers";
 import { useEffect, useState } from "react";
 import { Provider, Contract } from "zksync-web3";
 const abi = require('../components/nft-abi.json');
+const erc20Abi = require('../components/erc20-abi.json');
 const tokens = require('../components/tokens.json');
 const contracts = require('../components/contracts.json');
 
@@ -13,7 +14,6 @@ interface ProviderProps {
 export default function Page(props: ProviderProps) {
   const { provider } = props;
   const [url, setUrl] = useState<string>('');
-  const [token, setToken] = useState<string|null>('ETH');
   const [fees, setFees] = useState<string>('');
   const [balance, setBalance] = useState<any>(null);
   const [status, setStatus] = useState<any>(null);
@@ -24,22 +24,27 @@ export default function Page(props: ProviderProps) {
     provider.getSigner()
   );
 
+  const usdcContract = new Contract(
+    tokens.USDC.address,
+    erc20Abi,
+    provider.getSigner()
+  );
+
   useEffect(() => {
     (async () => {
-      if (!token) return;
       // update fees
-      const address = (await provider.send('eth_requestAccounts', []))[0];
-      const feeInGas = await contract.estimateGas.mintNFT(address, url, {
+      const feeInGas = await contract.estimateGas.mintNFT(url, {
         customData: {
-          feeToken: tokens[token].address
+          feeToken: tokens.USDC.address
         }
       });
-      const gasPriceInUnits = await provider.getGasPrice();
-      setFees(utils.formatUnits(feeInGas.mul(gasPriceInUnits), tokens[token].decimals));
+      const gasPriceInUnits = await provider.getGasPrice(tokens.USDC.address);
+      setFees(utils.formatUnits(feeInGas.mul(gasPriceInUnits), tokens.USDC.decimals));
 
       // update balance
-      const balanceInUnits = await provider.getSigner().getBalance(tokens[token].address);
-      setBalance(utils.formatUnits(balanceInUnits, tokens[token].decimals));
+      const address = (await provider.send('eth_requestAccounts', []))[0];
+      const balanceInUnits = await usdcContract.balanceOf(address);
+      setBalance(utils.formatUnits(balanceInUnits, tokens.USDC.decimals));
     })()
   })
 
@@ -54,8 +59,11 @@ export default function Page(props: ProviderProps) {
     }
 
     try {
-      const address = (await provider.send('eth_requestAccounts', []))[0];
-      const txHandle = await contract.mintNFT(address, url);
+      const txHandle = await contract.mintNFT(url, {
+        customData: {
+          feeToken: tokens.USDC.address
+        }
+      });
       
       setStatus({
         loading: true,
@@ -97,23 +105,9 @@ export default function Page(props: ProviderProps) {
           label="Image URL"
           size="md"
         />
-        <Select
-          value={token}
-          onChange={(token) => setToken(token)}
-          label="Select Token to pay fees with:"
-          placeholder="ETH"
-          data={[
-            { value: 'ETH', label: 'ETH' },
-            { value: 'USDC', label: 'USDC' },
-          ]}
-        />
-        <Text style={{fontSize: 18}}>Your balance: {balance}{token}</Text>
-        { token == "USDC" && 
-        <Alert title="Warning!" color="yellow" variant="filled">
-          The fee estimates for USDC are currently wrong!
-        </Alert> }
+        <Text style={{fontSize: 18}}>Your balance: {balance} USDC</Text>
         <Group position="apart">
-          <Text style={{fontSize: 18}}>Estimated fees: {fees}</Text>
+          <Text style={{fontSize: 18}}>Estimated fees: {fees} USDC</Text>
           <Button variant="light" color="cyan" onClick={mint}>Mint</Button>
         </Group>
         { status && (

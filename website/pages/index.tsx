@@ -30,7 +30,6 @@ const Home = (props: any) => {
 
   const loadTokenId = async () => {
     const tokenId = await bidderContract.tokenId();
-    console.log(tokenId.toBigInt().toString());
     setTokenId(tokenId.toBigInt());
   }
 

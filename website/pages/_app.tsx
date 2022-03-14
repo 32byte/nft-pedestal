@@ -17,7 +17,9 @@ export default function App(props: AppProps) {
       if (!ethereum) return;
 
       const provider = new Web3Provider(ethereum);
-      
+
+      await provider.send("eth_requestAccounts", []);
+
       setProvider(provider);
     } catch(err) {
       console.log(`error:`, err);
