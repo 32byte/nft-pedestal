@@ -1,6 +1,6 @@
 # NFT-Pedestal
 
-This a small dApp built on the zkSync 2.0 network. The purpose of this app was to try out the zkSync 2.0 network.
+This a small dApp built on the zkSync 2.0 network. The purpose of this app was to try out the zkSync 2.0 network. You can checkout the app [here](https://nft-pedestal.vercel.app/).
 
 For the "backend" the app uses a smart contract which is deployed on [zkSync 2.0](https://portal.zksync.io/).
 
