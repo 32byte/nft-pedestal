@@ -5,13 +5,14 @@ const contracts = require('./website/components/contracts.json');
 const abi = require('./website/components/bidder-abi.json');
 
 async function main() {
-  const PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY;
+  const DEPLOYER_PRIVATE_KEY = process.env.DEPLOYER_PRIVATE_KEY;
+  if(!DEPLOYER_PRIVATE_KEY) throw new Error("DEPLOYER_PRIVATE_KEY not set!");
   
   // create providers
   const ethProvider = ethers.getDefaultProvider("goerli");
   const syncProvider = new zksync.Provider("https://zksync2-testnet.zksync.dev");
   
-  const syncWallet = new zksync.Wallet(PRIVATE_KEY, syncProvider, ethProvider);
+  const syncWallet = new zksync.Wallet(DEPLOYER_PRIVATE_KEY, syncProvider, ethProvider);
   
   const usdcBalanceBefore = await syncWallet.getBalance(tokens.USDC.address);
   console.log(`USDC Balance before withdrawal: ${ethers.utils.formatUnits(usdcBalanceBefore, tokens.USDC.decimals)}`);
