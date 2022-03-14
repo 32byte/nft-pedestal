@@ -2,6 +2,10 @@
 
 This a small dApp built on the zkSync 2.0 network. The purpose of this app was to try out the zkSync 2.0 network.
 
+For the "backend" the app uses a smart contract which is deployed on [zkSync 2.0](https://portal.zksync.io/).
+
+The frontend is built using [NextJS](https://nextjs.org/) + [Mantine](https://mantine.dev/).
+
 ## How to use
 
 ### Home
